@@ -1,13 +1,26 @@
+import React from "react"
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 
-import './App.css'
-import Home from './components/Home/Home'
+import Home from "./components/Home/Home"
+
+import Layout from "./components/Layout/Layout"
+import "./App.css"
 
 function App() {
-
   return (
-    <>
-      <Home/>
-    </>
+    
+      <Router>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            
+           
+            
+            
+          </Route>
+        </Routes>
+      </Router>
+    
   )
 }
 

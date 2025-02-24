@@ -4,7 +4,10 @@ import { useState, useEffect, useRef } from "react"
 import { motion, useScroll, useTransform, useSpring } from "framer-motion"
 import CountUp from "react-countup"
 import { useInView } from "react-intersection-observer"
-import { ChevronDown, TrendingUp, DollarSign, BarChart2, PieChart, Activity } from "lucide-react"
+import { ChevronDown, TrendingUp, DollarSign, BarChart2, PieChart, Activity, Menu, X } from "lucide-react"
+import a1 from "../../assets/1.avif"
+import a2 from "../../assets/2.avif"
+import a3 from "../../assets/3.avif"
 
 const ParallaxSection = ({ children, speed = 0.5 }) => {
   const ref = useRef(null)
@@ -41,6 +44,47 @@ const StatCard = ({ label, value, suffix = "" }) => {
       </h3>
       <p className="text-purple-200">{label}</p>
     </motion.div>
+  )
+}
+
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false)
+
+  return (
+    <nav className="bg-purple-900 fixed w-full z-50 top-0 left-0 shadow-lg">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <div className="text-white text-2xl font-bold">StockPro</div>
+        <div className="hidden md:flex space-x-6">
+          <a href="#features" className="text-purple-200 hover:text-white">Features</a>
+          <a href="#about" className="text-purple-200 hover:text-white">About</a>
+          <a href="#pricing" className="text-purple-200 hover:text-white">Pricing</a>
+          <a href="#testimonials" className="text-purple-200 hover:text-white">Testimonials</a>
+          <a href="#cta" className="text-purple-200 hover:text-white">Get Started</a>
+        </div>
+        <div className="hidden md:flex space-x-4">
+          <button className="bg-purple-500 text-white px-4 py-2 rounded-full">Login</button>
+          <button className="bg-transparent border-2 border-purple-400 text-purple-400 px-4 py-2 rounded-full">Sign Up</button>
+        </div>
+        <div className="md:hidden">
+          <button onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+          </button>
+        </div>
+      </div>
+      {isOpen && (
+        <div className="md:hidden bg-purple-800">
+          <a href="#features" className="block px-4 py-2 text-purple-200 hover:text-white">Features</a>
+          <a href="#about" className="block px-4 py-2 text-purple-200 hover:text-white">About</a>
+          <a href="#pricing" className="block px-4 py-2 text-purple-200 hover:text-white">Pricing</a>
+          <a href="#testimonials" className="block px-4 py-2 text-purple-200 hover:text-white">Testimonials</a>
+          <a href="#cta" className="block px-4 py-2 text-purple-200 hover:text-white">Get Started</a>
+          <div className="flex flex-col space-y-2 px-4 py-2">
+            <button className="bg-purple-500 text-white px-4 py-2 rounded-full">Login</button>
+            <button className="bg-transparent border-2 border-purple-400 text-purple-400 px-4 py-2 rounded-full">Sign Up</button>
+          </div>
+        </div>
+      )}
+    </nav>
   )
 }
 
@@ -106,12 +150,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 to-purple-900 text-white overflow-hidden">
+      <Navbar />
       <motion.div className="fixed top-0 left-0 right-0 h-1 z-50 bg-purple-400 transform-origin-0" style={{ scaleX }} />
       <main className="pt-16">
         <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
           <ParallaxSection speed={0.2}>
             <div className="absolute inset-0 z-0">
-              <img src="/stock-background.jpg" alt="Stock Market" className="w-full h-full object-cover" />
+              <img src={a1} alt="Stock Market" className="w-full h-full object-cover" />
               <div className="absolute inset-0 bg-gradient-to-br from-purple-900 to-black opacity-70"></div>
             </div>
           </ParallaxSection>
@@ -203,7 +248,7 @@ export default function Home() {
                   className="absolute inset-0 flex items-center justify-center"
                 >
                   <img
-                    src={`/feature-${activeFeature + 1}.jpg`}
+                    src={a2}
                     alt={features[activeFeature].title}
                     className="max-w-full max-h-full rounded-lg shadow-2xl"
                   />
@@ -437,6 +482,16 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <footer className="bg-purple-900 py-8">
+        <div className="container mx-auto px-4 text-center text-purple-200">
+          <p>&copy; 2023 StockPro. All rights reserved.</p>
+          <div className="flex justify-center space-x-4 mt-4">
+            <a href="#" className="hover:text-white">Privacy Policy</a>
+            <a href="#" className="hover:text-white">Terms of Service</a>
+            <a href="#" className="hover:text-white">Contact Us</a>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }

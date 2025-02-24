@@ -56,7 +56,6 @@ export default function Sidebar() {
       </button>
 
       <div className="flex items-center mb-8">
-        <img src="/logo.svg" alt="Logo" className="w-8 h-8" />
         {!isCollapsed && (
           <motion.span
             initial={{ opacity: 0 }}

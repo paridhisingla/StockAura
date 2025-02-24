@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { Menu, X, LogOut } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import logo from "../../assets/logo.svg"
 
@@ -27,11 +27,11 @@ const Navbar = () => {
           <span className="text-white text-2xl font-bold">StockAura</span>
         </div>
         <div className="hidden md:flex space-x-6">
-          <a href="#features" className="text-purple-200 hover:text-white">Features</a>
-          <a href="#about" className="text-purple-200 hover:text-white">About</a>
-          <a href="#pricing" className="text-purple-200 hover:text-white">Pricing</a>
-          <a href="#testimonials" className="text-purple-200 hover:text-white">Testimonials</a>
-          <a href="#cta" className="text-purple-200 hover:text-white">Get Started</a>
+          <Link to="/" className="text-purple-200 hover:text-white">Home</Link>
+          <a href="/#about" className="text-purple-200 hover:text-white">About</a>
+          <a href="/#pricing" className="text-purple-200 hover:text-white">Pricing</a>
+          <Link to="/purchase" className="text-purple-200 hover:text-white">Stocks</Link>
+          <Link to="/profile" className="text-purple-200 hover:text-white">Profile</Link>
         </div>
         <div className="hidden md:flex space-x-4">
           {isAuthenticated ? (
@@ -70,11 +70,11 @@ const Navbar = () => {
       </div>
       {isOpen && (
         <div className="md:hidden bg-purple-800">
-          <a href="#features" className="block px-4 py-2 text-purple-200 hover:text-white">Features</a>
-          <a href="#about" className="block px-4 py-2 text-purple-200 hover:text-white">About</a>
-          <a href="#pricing" className="block px-4 py-2 text-purple-200 hover:text-white">Pricing</a>
-          <a href="#testimonials" className="block px-4 py-2 text-purple-200 hover:text-white">Testimonials</a>
-          <a href="#cta" className="block px-4 py-2 text-purple-200 hover:text-white">Get Started</a>
+          <a href="/#features" className="block px-4 py-2 text-purple-200 hover:text-white">Features</a>
+          <a href="/#about" className="block px-4 py-2 text-purple-200 hover:text-white">About</a>
+          <a href="/#pricing" className="block px-4 py-2 text-purple-200 hover:text-white">Pricing</a>
+          <Link to="/purchase" className="block px-4 py-2 text-purple-200 hover:text-white">Stocks</Link>
+          <Link to="/profile" className="block px-4 py-2 text-purple-200 hover:text-white">Profile</Link>
           <div className="flex flex-col space-y-2 px-4 py-2">
             {isAuthenticated ? (
               <>

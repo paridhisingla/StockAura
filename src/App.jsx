@@ -15,7 +15,9 @@ import PrivateRoute from './Protected_Routes/PrivateRoute';
 
 
 import "./App.css"
-
+import Purchase from "./components/Purchase/Purchase";
+import Profile from "./components/Profile/Profile";
+import Users from "./components/Admin/Users";
 function App() {
   return (
     
@@ -26,10 +28,13 @@ function App() {
             <Route index element={<Home />} />
             
            <Route path="/login" element={<Login />} />
+           <Route path="/profile" element={<Profile />} />
            <Route path="/signup" element={<Signup />} />
             
             
+          <Route path="/purchase" element={<Purchase />} />
           </Route>
+
           <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>}>
             <Route index element={<Overview />} />
             <Route path="stocks">
@@ -38,6 +43,7 @@ function App() {
               <Route path="add" element={<AddStock />} />
               <Route path="list" element={<StockList />} />
             </Route>
+            <Route path="users" element={<Users />} />
           </Route>
         
         </Routes>

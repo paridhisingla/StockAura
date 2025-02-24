@@ -1,20 +1,16 @@
+
 "use client"
 import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { useNavigate } from "react-router-dom"
 import axios from "axios"
 import {
-  Edit,
-  Trash2,
-  TrendingUp,
-  TrendingDown,
-  Search,
-  Filter,
-  RefreshCw,
-  PlusCircle,
-  Download,
-  ArrowUp,
-  ArrowDown
+  Edit,Trash2,TrendingUp,TrendingDown,Search,Filter,RefreshCw,PlusCircle,Download,ArrowUp,
+  ArrowDown,
+  ChevronLeft,
+  ChevronRight,
+  ChevronsLeft,
+  ChevronsRight
 } from "lucide-react"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -26,6 +22,8 @@ export default function StockList() {
   const [searchTerm, setSearchTerm] = useState("")
   const [filterSector, setFilterSector] = useState("all")
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' })
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(10)
 
   useEffect(() => {
     fetchStocks()
@@ -33,110 +31,129 @@ export default function StockList() {
 
   const fetchStocks = async () => {
     try {
-        setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/stocks");
-        setStocks(response.data);
+      setLoading(true)
+      const response = await axios.get("http://localhost:5000/api/stocks")
+      setStocks(response.data)
     } catch (error) {
-        console.error("Error fetching stocks:", error);
-        toast.error("Error fetching stocks");
-        setStocks([]); 
+      console.error("Error fetching stocks:", error)
+      toast.error("Error fetching stocks")
+      setStocks([])
     } finally {
-        setLoading(false);
+      setLoading(false)
     }
-};
+  }
 
   const handleEdit = async (stock) => {
     try {
-       
-        const response = await axios.get(`http://localhost:5000/api/stocks/${stock._id}`);
-        if (response.data) {
-            navigate(`/admin/stocks/add?id=${stock._id}`);
-        }
+      const response = await axios.get(`http://localhost:5000/api/stocks/${stock._id}`)
+      if (response.data) {
+        navigate(`/admin/stocks/add?id=${stock._id}`)
+      }
     } catch (error) {
-        console.error("Error:", error);
-        toast.error("Stock not found or has been deleted");
-        
-        fetchStocks();
+      console.error("Error:", error)
+      toast.error("Stock not found or has been deleted")
+      fetchStocks()
     }
-};
+  }
 
-const handleDelete = async (id) => {
+  const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this stock?")) {
-        try {
-            await axios.delete(`http://localhost:5000/api/stocks/${id}`);
-            toast.success("Stock deleted successfully");
-            
-            setStocks(prevStocks => prevStocks.filter(stock => stock._id !== id));
-        } catch (error) {
-            console.error("Error:", error);
-            toast.error("Error deleting stock");
-            
-            fetchStocks();
-        }
+      try {
+        await axios.delete(`http://localhost:5000/api/stocks/${id}`)
+        toast.success("Stock deleted successfully")
+        setStocks(prevStocks => prevStocks.filter(stock => stock._id !== id))
+      } catch (error) {
+        console.error("Error:", error)
+        toast.error("Error deleting stock")
+        fetchStocks()
+      }
     }
-};
-
+  }
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-        // First verify if the stock exists
-        const response = await axios.patch(`http://localhost:5000/api/stocks/${id}`, {
-            status: newStatus
-        });
-        
-        if (response.data) {
-            toast.success("Status updated successfully");
-            // Update the local state
-            setStocks(prevStocks => 
-                prevStocks.map(stock => 
-                    stock._id === id ? { ...stock, status: newStatus } : stock
-                )
-            );
-        }
+      const response = await axios.patch(`http://localhost:5000/api/stocks/${id}`, {
+        status: newStatus
+      })
+      
+      if (response.data) {
+        toast.success("Status updated successfully")
+        setStocks(prevStocks => 
+          prevStocks.map(stock => 
+            stock._id === id ? { ...stock, status: newStatus } : stock
+          )
+        )
+      }
     } catch (error) {
-        console.error("Error updating status:", error);
-        const errorMessage = error.response?.data?.message || "Error updating status";
-        toast.error(errorMessage);
-        
-        // Refresh the stock list to ensure data consistency
-        fetchStocks();
+      console.error("Error updating status:", error)
+      const errorMessage = error.response?.data?.message || "Error updating status"
+      toast.error(errorMessage)
+      fetchStocks()
     }
-};
+  }
+
 
   const handleSort = (key) => {
-    let direction = 'asc';
+    let direction = 'asc'
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
+      direction = 'desc'
     }
-    setSortConfig({ key, direction });
+    setSortConfig({ key, direction })
   }
 
   const sortedStocks = [...stocks].sort((a, b) => {
-    if (!sortConfig.key) return 0;
+    if (!sortConfig.key) return 0
 
-    let aValue = a[sortConfig.key];
-    let bValue = b[sortConfig.key];
+    let aValue = a[sortConfig.key]
+    let bValue = b[sortConfig.key]
 
-    // Handle numeric values
     if (sortConfig.key === 'price' || sortConfig.key === 'marketCap') {
-      aValue = parseFloat(aValue);
-      bValue = parseFloat(bValue);
+      aValue = parseFloat(aValue)
+      bValue = parseFloat(bValue)
     }
 
-    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1;
-    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1;
-    return 0;
-  });
+    if (aValue < bValue) return sortConfig.direction === 'asc' ? -1 : 1
+    if (aValue > bValue) return sortConfig.direction === 'asc' ? 1 : -1
+    return 0
+  })
 
   const filteredStocks = sortedStocks.filter(stock => {
     const matchesSearch = stock.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         stock.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesSector = filterSector === "all" || stock.sector === filterSector;
-    return matchesSearch && matchesSector;
-  });
+                         stock.description.toLowerCase().includes(searchTerm.toLowerCase())
+    const matchesSector = filterSector === "all" || stock.sector === filterSector
+    return matchesSearch && matchesSector
+  })
+
+  const indexOfLastItem = currentPage * itemsPerPage
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage
+  const currentStocks = filteredStocks.slice(indexOfFirstItem, indexOfLastItem)
+  const totalPages = Math.ceil(filteredStocks.length / itemsPerPage)
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber)
+  }
+
+  const goToFirstPage = () => setCurrentPage(1)
+  const goToLastPage = () => setCurrentPage(totalPages)
+
+  const PaginationButton = ({ children, onClick, disabled }) => (
+    <motion.button
+      whileHover={{ scale: disabled ? 1 : 1.05 }}
+      whileTap={{ scale: disabled ? 1 : 0.95 }}
+      onClick={onClick}
+      disabled={disabled}
+      className={`p-2 rounded-lg transition-colors ${
+        disabled 
+          ? 'bg-purple-900/20 text-purple-500 cursor-not-allowed' 
+          : 'bg-purple-500 text-white hover:bg-purple-600'
+      }`}
+    >
+      {children}
+    </motion.button>
+  )
 
   const exportToCSV = () => {
-    const headers = ['Company Name', 'Price', 'Market Cap', 'Sector', 'Status', 'Description'];
+    const headers = ['Company Name', 'Price', 'Market Cap', 'Sector', 'Status', 'Description']
     const csvData = filteredStocks.map(stock => [
       stock.companyName,
       stock.price,
@@ -144,26 +161,26 @@ const handleDelete = async (id) => {
       stock.sector,
       stock.status,
       stock.description
-    ]);
+    ])
 
     const csvContent = [
       headers.join(','),
       ...csvData.map(row => row.join(','))
-    ].join('\n');
+    ].join('\n')
 
-    const blob = new Blob([csvContent], { type: 'text/csv' });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'stocks.csv';
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
+    const blob = new Blob([csvContent], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'stocks.csv'
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
 
   const SortIcon = ({ column }) => {
-    if (sortConfig.key !== column) return null;
-    return sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />;
-  };
+    if (sortConfig.key !== column) return null
+    return sortConfig.direction === 'asc' ? <ArrowUp className="w-4 h-4" /> : <ArrowDown className="w-4 h-4" />
+  }
 
   return (
     <div className="space-y-6">
@@ -199,7 +216,6 @@ const handleDelete = async (id) => {
         </div>
       </div>
 
-      {/* Search and Filter */}
       <div className="flex gap-4 flex-wrap">
         <div className="flex-1 min-w-[200px]">
           <div className="relative">
@@ -227,7 +243,6 @@ const handleDelete = async (id) => {
         </select>
       </div>
 
-      {/* Stocks Table */}
       <div className="bg-purple-900/20 rounded-lg shadow-lg overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -280,14 +295,14 @@ const handleDelete = async (id) => {
                     Loading...
                   </td>
                 </tr>
-              ) : filteredStocks.length === 0 ? (
+              ) : currentStocks.length === 0 ? (
                 <tr>
                   <td colSpan="6" className="text-center py-4 text-white">
                     No stocks found
                   </td>
                 </tr>
               ) : (
-                filteredStocks.map((stock) => (
+                currentStocks.map((stock) => (
                   <motion.tr
                     key={stock._id}
                     initial={{ opacity: 0 }}
@@ -355,6 +370,98 @@ const handleDelete = async (id) => {
             </tbody>
           </table>
         </div>
+
+        {!loading && filteredStocks.length > 0 && (
+          <div className="flex justify-between items-center px-4 py-3 bg-purple-900/40">
+            <div className="flex items-center text-sm text-purple-300">
+              <span>
+                Showing {indexOfFirstItem + 1} to{" "}
+                {Math.min(indexOfLastItem, filteredStocks.length)} of{" "}
+                {filteredStocks.length} entries
+              </span>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <PaginationButton
+                onClick={goToFirstPage}
+                disabled={currentPage === 1}
+              >
+                <ChevronsLeft className="w-4 h-4" />
+              </PaginationButton>
+
+              <PaginationButton
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </PaginationButton>
+
+              <div className="flex space-x-1">
+                {[...Array(totalPages)].map((_, index) => {
+                  const pageNumber = index + 1
+                  if (
+                    pageNumber === 1 ||
+                    pageNumber === totalPages ||
+                    (pageNumber >= currentPage - 2 && pageNumber <= currentPage + 2)
+                  ) {
+                    return (
+                      <motion.button
+                        key={pageNumber}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => paginate(pageNumber)}
+                        className={`w-8 h-8 rounded-lg transition-colors ${
+                          currentPage === pageNumber
+                            ? 'bg-purple-500 text-white'
+                            : 'bg-purple-900/20 text-purple-300 hover:bg-purple-500/50'
+                        }`}
+                      >
+                        {pageNumber}
+                      </motion.button>
+                    )
+                  } else if (
+                    pageNumber === currentPage - 3 ||
+                    pageNumber === currentPage + 3
+                  ) {
+                    return <span key={pageNumber} className="text-purple-300">...</span>
+                  }
+                  return null
+                })}
+              </div>
+
+              <PaginationButton
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </PaginationButton>
+
+              <PaginationButton
+                onClick={goToLastPage}
+                disabled={currentPage === totalPages}
+              >
+                <ChevronsRight className="w-4 h-4" />
+              </PaginationButton>
+            </div>
+
+            <div className="flex items-center space-x-2">
+              <span className="text-sm text-purple-300">Items per page:</span>
+              <select
+                value={itemsPerPage}
+                onChange={(e) => {
+                  setItemsPerPage(Number(e.target.value))
+                  setCurrentPage(1)
+                }}
+                className="bg-purple-900/20 text-white border border-purple-500 rounded px-2 py-1"
+              >
+                <option value={5}>5</option>
+                <option value={10}>10</option>
+                <option value={20}>20</option>
+                <option value={50}>50</option>
+              </select>
+            </div>
+          </div>
+        )}
       </div>
       
       <ToastContainer position="top-right" theme="dark" />

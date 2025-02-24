@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Portfolio = require('../models/portfolioModel');
-const Transaction = require('../models/transactionModel');
+const Portfolio = require('../models/Portfolio');
+const Transaction = require('../models/Transaction');
 const auth = require('../middleware/auth');
 
 router.get('/:userId', auth, async (req, res) => {

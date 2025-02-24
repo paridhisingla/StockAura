@@ -8,6 +8,7 @@ import { ChevronDown, TrendingUp, DollarSign, BarChart2, PieChart, Activity, Men
 import a1 from "../../assets/1.avif"
 import a2 from "../../assets/2.avif"
 import a3 from "../../assets/3.avif"
+import logo from "../../assets/logo.svg" // Import the logo image
 
 const ParallaxSection = ({ children, speed = 0.5 }) => {
   const ref = useRef(null)
@@ -53,7 +54,10 @@ const Navbar = () => {
   return (
     <nav className="bg-purple-900 fixed w-full z-50 top-0 left-0 shadow-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <div className="text-white text-2xl font-bold">StockPro</div>
+        <div className="flex items-center space-x-2">
+          <img src={logo} alt="StockPro Logo" className="w-8 h-8" /> {/* Use the imported logo */}
+          <span className="text-white text-2xl font-bold">StockPro</span>
+        </div>
         <div className="hidden md:flex space-x-6">
           <a href="#features" className="text-purple-200 hover:text-white">Features</a>
           <a href="#about" className="text-purple-200 hover:text-white">About</a>

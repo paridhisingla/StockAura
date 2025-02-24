@@ -271,9 +271,9 @@ app.get('/api/stocks', async (req, res) => {
     }
 });
 
-// ... existing code ...
 
-// Add new schema for user wallet and transactions
+
+
 const walletSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     balance: { type: Number, default: 0 },
@@ -299,7 +299,7 @@ const walletSchema = new mongoose.Schema({
   
   const Transaction = mongoose.model('Transaction', transactionSchema);
   
-  // Add portfolio schema
+
   const portfolioSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     stocks: [{
@@ -311,12 +311,12 @@ const walletSchema = new mongoose.Schema({
   
   const Portfolio = mongoose.model('Portfolio', portfolioSchema);
   
-  // Modify user schema to include wallet reference
+  
   userSchema.add({
     wallet: { type: mongoose.Schema.Types.ObjectId, ref: 'Wallet' }
   });
   
-  // Add wallet routes
+  
   app.post('/api/wallet/deposit', async (req, res) => {
     try {
       const { userId, amount } = req.body;
@@ -339,18 +339,18 @@ const walletSchema = new mongoose.Schema({
     }
   });
   
-  // Add stock purchase route
+
   app.post('/api/stocks/purchase', async (req, res) => {
     try {
       const { userId, stockId, quantity } = req.body;
       const purchaseQuantity = parseInt(quantity);
   
-      // Validate inputs
+      
       if (!userId || !stockId || !purchaseQuantity || purchaseQuantity <= 0) {
         return res.status(400).json({ message: 'Invalid purchase request' });
       }
   
-      // Find and update stock atomically
+      
       const stock = await Stock.findOneAndUpdate(
         { 
           _id: stockId,
@@ -366,7 +366,7 @@ const walletSchema = new mongoose.Schema({
         return res.status(400).json({ message: 'Stock not available in requested quantity' });
       }
   
-      // Find user's wallet
+     
       let wallet = await Wallet.findOne({ userId });
       if (!wallet) {
         wallet = new Wallet({ userId, balance: 0 });
@@ -374,12 +374,12 @@ const walletSchema = new mongoose.Schema({
   
       const totalCost = stock.price * purchaseQuantity;
   
-      // Check if user has enough balance
+      
       if (wallet.balance < totalCost) {
         return res.status(400).json({ message: 'Insufficient funds' });
       }
   
-      // Update wallet
+     
       wallet.balance -= totalCost;
       wallet.transactions.push({
         type: 'purchase',
@@ -388,13 +388,13 @@ const walletSchema = new mongoose.Schema({
         quantity: purchaseQuantity
       });
   
-      // Find or create portfolio
+    
       let portfolio = await Portfolio.findOne({ userId });
       if (!portfolio) {
         portfolio = new Portfolio({ userId, stocks: [] });
       }
   
-      // Update portfolio
+      
       const existingStockIndex = portfolio.stocks.findIndex(
         item => item.stockId.toString() === stockId
       );
@@ -416,7 +416,7 @@ const walletSchema = new mongoose.Schema({
         });
       }
   
-      // Save wallet and portfolio
+      
       await Promise.all([
         wallet.save(),
         portfolio.save()
@@ -437,7 +437,6 @@ const walletSchema = new mongoose.Schema({
     }
   });
   
-  // Add portfolio route
   app.get('/api/portfolio/:userId', async (req, res) => {
     try {
       const portfolio = await Portfolio.findOne({ userId: req.params.userId })
@@ -450,7 +449,7 @@ const walletSchema = new mongoose.Schema({
       }, 0);
     }
 
-    // Add totalValue to portfolio object
+ 
     const enrichedPortfolio = portfolio ? {
       ...portfolio._doc,
       totalValue
@@ -465,45 +464,38 @@ const walletSchema = new mongoose.Schema({
     try {
       const { userId, stockId, quantity } = req.body;
       
-      // Convert quantity to number
       const purchaseQuantity = parseInt(quantity);
   
-      // Validate inputs
+  
       if (!userId || !stockId || !purchaseQuantity || purchaseQuantity <= 0) {
         return res.status(400).json({ message: 'Invalid purchase request' });
       }
   
-      // Find the stock
       const stock = await Stock.findById(stockId);
       if (!stock) {
         return res.status(404).json({ message: 'Stock not found' });
       }
-  
-      // Convert price to number and calculate total cost
+
       const stockPrice = parseFloat(stock.price);
       const totalCost = stockPrice * purchaseQuantity;
   
-      // Check if enough stocks are available
+
       if (stock.maxStocks < purchaseQuantity) {
         return res.status(400).json({ message: 'Not enough stocks available' });
       }
-  
-      // Find user's wallet
+
       let wallet = await Wallet.findOne({ userId });
       if (!wallet) {
         wallet = new Wallet({ userId, balance: 0 });
         await wallet.save();
       }
-  
-      // Check if user has enough balance
+
       if (wallet.balance < totalCost) {
         return res.status(400).json({ message: 'Insufficient funds' });
       }
   
-      // Update stock quantity directly
       stock.maxStocks = stock.maxStocks - purchaseQuantity;
-  
-      // Update wallet
+
       wallet.balance -= totalCost;
       wallet.transactions.push({
         type: 'purchase',
@@ -512,19 +504,19 @@ const walletSchema = new mongoose.Schema({
         quantity: purchaseQuantity
       });
   
-      // Find or create portfolio
+
       let portfolio = await Portfolio.findOne({ userId });
       if (!portfolio) {
         portfolio = new Portfolio({ userId, stocks: [] });
       }
   
-      // Update portfolio
+ 
       const existingStockIndex = portfolio.stocks.findIndex(
         item => item.stockId.toString() === stockId
       );
   
       if (existingStockIndex !== -1) {
-        // Update existing stock
+        
         const existingStock = portfolio.stocks[existingStockIndex];
         const newQuantity = existingStock.quantity + purchaseQuantity;
         const newTotalCost = existingStock.purchasePrice * existingStock.quantity + totalCost;
@@ -534,7 +526,7 @@ const walletSchema = new mongoose.Schema({
           purchasePrice: newTotalCost / newQuantity
         };
       } else {
-        // Add new stock
+        
         portfolio.stocks.push({
           stockId,
           quantity: purchaseQuantity,
@@ -542,7 +534,7 @@ const walletSchema = new mongoose.Schema({
         });
       }
   
-      // Save all changes
+    
       await Promise.all([
         stock.save(),
         wallet.save(),
@@ -570,7 +562,7 @@ const walletSchema = new mongoose.Schema({
       });
     }
   });
-  // Add this route temporarily to fix the data
+ 
 app.get('/api/migrate-stocks', async (req, res) => {
     try {
       const stocks = await Stock.find({});
@@ -592,18 +584,18 @@ app.get('/api/migrate-stocks', async (req, res) => {
     try {
       const { userId, stockId, quantity, price } = req.body;
   
-      // Validate inputs
+      
       if (!userId || !stockId || !quantity || !price) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
   
-      // Find user's portfolio
+     
       const portfolio = await Portfolio.findOne({ userId });
       if (!portfolio) {
         return res.status(404).json({ message: 'Portfolio not found' });
       }
   
-      // Find the stock in the portfolio
+    
       const stockIndex = portfolio.stocks.findIndex(
         item => item.stockId.toString() === stockId
       );
@@ -614,22 +606,22 @@ app.get('/api/migrate-stocks', async (req, res) => {
   
       const stockInPortfolio = portfolio.stocks[stockIndex];
   
-      // Check if user has enough shares to sell
+ 
       if (stockInPortfolio.quantity < quantity) {
         return res.status(400).json({ message: 'Not enough shares to sell' });
       }
   
-      // Calculate sale amount
+     
       const saleAmount = price * quantity;
   
-      // Update stock quantity or remove if selling all
+      
       if (stockInPortfolio.quantity === quantity) {
         portfolio.stocks.splice(stockIndex, 1);
       } else {
         portfolio.stocks[stockIndex].quantity -= quantity;
       }
   
-      // Update wallet
+   
       const wallet = await Wallet.findOne({ userId });
       if (!wallet) {
         return res.status(404).json({ message: 'Wallet not found' });
@@ -643,14 +635,13 @@ app.get('/api/migrate-stocks', async (req, res) => {
         quantity
       });
   
-      // Update stock availability
+   
       const stock = await Stock.findById(stockId);
       if (!stock) {
         return res.status(404).json({ message: 'Stock not found' });
       }
       stock.maxStocks = stock.maxStocks + quantity;
   
-      // Save all changes
       await Promise.all([
         portfolio.save(),
         wallet.save(),
@@ -679,13 +670,13 @@ app.get('/api/migrate-stocks', async (req, res) => {
     }
   });
 
-  // Add this route for price history
+ 
 app.get('/price-history', async (req, res) => {
     try {
         const stocks = await Stock.find();
         const priceHistories = {};
         
-        // Generate mock price history for demonstration
+      
         stocks.forEach(stock => {
             const history = generatePriceHistory(stock.price);
             priceHistories[stock._id] = history;
@@ -716,7 +707,7 @@ app.get('/performance/:userId', async (req, res) => {
       const transactions = await Transaction.find({ userId: req.params.userId })
         .sort({ date: 1 });
       
-      // Calculate daily portfolio values
+      
       const performanceData = calculateDailyPortfolioValues(transactions);
       
       res.json(performanceData);
@@ -728,11 +719,11 @@ app.get('/performance/:userId', async (req, res) => {
 
   app.get('/api/portfolio/history/:userId', async (req, res) => {
     try {
-      // Get all transactions for the user
+  
       const transactions = await Transaction.find({ userId: req.params.userId })
         .sort({ date: 1 });
       
-      // Calculate daily portfolio values
+     
       const dailyValues = [];
       const today = new Date();
       const thirtyDaysAgo = new Date(today.setDate(today.getDate() - 30));
@@ -763,7 +754,7 @@ app.get('/performance/:userId', async (req, res) => {
     }
   });
   
-  // Get transaction history
+
   app.get('/api/transactions/:userId', async (req, res) => {
     try {
       const transactions = await Transaction.find({ userId: req.params.userId })
@@ -781,13 +772,12 @@ app.get('/performance/:userId', async (req, res) => {
       res.status(500).json({ message: error.message });
     }
   });
-  // Add these routes to your existing index.js
+ 
 
-// Get all users
 app.get('/api/users', async (req, res) => {
     try {
       const users = await User.find()
-        .select('-password') // Exclude password from the response
+        .select('-password') 
         .sort({ createdAt: -1 });
       res.json(users);
     } catch (error) {
@@ -796,7 +786,7 @@ app.get('/api/users', async (req, res) => {
     }
   });
   
-  // Get user wallet details
+
   app.get('/api/wallet/:userId', async (req, res) => {
     try {
       const wallet = await Wallet.findOne({ userId: req.params.userId });
@@ -809,8 +799,7 @@ app.get('/api/users', async (req, res) => {
       res.status(500).json({ message: 'Error fetching wallet details' });
     }
   });
-  
-  // Get user portfolio with populated stock details
+
   app.get('/api/portfolio/:userId', async (req, res) => {
     try {
       const portfolio = await Portfolio.findOne({ userId: req.params.userId })
@@ -823,7 +812,6 @@ app.get('/api/users', async (req, res) => {
         return res.status(404).json({ message: 'Portfolio not found' });
       }
   
-      // Calculate total portfolio value
       let totalValue = 0;
       if (portfolio.stocks) {
         totalValue = portfolio.stocks.reduce((sum, stock) => {
@@ -841,7 +829,7 @@ app.get('/api/users', async (req, res) => {
     }
   });
   
-  // Get user transactions with populated stock details
+
   app.get('/api/transactions/:userId', async (req, res) => {
     try {
       const transactions = await Transaction.find({ userId: req.params.userId })
@@ -858,7 +846,7 @@ app.get('/api/users', async (req, res) => {
     }
   });
   
-  // Get user portfolio history
+  
   app.get('/api/portfolio/history/:userId', async (req, res) => {
     try {
       const portfolio = await Portfolio.findOne({ userId: req.params.userId })
@@ -869,7 +857,7 @@ app.get('/api/users', async (req, res) => {
   
       const wallet = await Wallet.findOne({ userId: req.params.userId });
   
-      // Calculate current total value
+      
       let totalValue = 0;
       if (portfolio?.stocks) {
         totalValue = portfolio.stocks.reduce((sum, stock) => {
@@ -880,11 +868,10 @@ app.get('/api/users', async (req, res) => {
         totalValue += wallet.balance;
       }
   
-      // Get historical transactions to calculate past values
+      
       const transactions = await Transaction.find({ userId: req.params.userId })
         .sort({ date: 1 });
   
-      // Create historical points
       let historyPoints = [];
       let runningValue = 0;
   
@@ -901,7 +888,7 @@ app.get('/api/users', async (req, res) => {
         });
       });
   
-      // Add current value
+     
       historyPoints.push({
         date: new Date(),
         totalValue
@@ -914,7 +901,7 @@ app.get('/api/users', async (req, res) => {
     }
   });
   
-  // Get detailed user information
+  
   app.get('/api/users/:userId', async (req, res) => {
     try {
       const user = await User.findById(req.params.userId).select('-password');

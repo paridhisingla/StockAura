@@ -55,8 +55,8 @@ const Navbar = () => {
     <nav className="bg-purple-900 fixed w-full z-50 top-0 left-0 shadow-lg">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex items-center space-x-2">
-          <img src={logo} alt="StockPro Logo" className="w-8 h-8" /> {/* Use the imported logo */}
-          <span className="text-white text-2xl font-bold">StockPro</span>
+          <img src={logo} alt="StockAura Logo" className="w-8 h-8" /> {/* Use the imported logo */}
+          <span className="text-white text-2xl font-bold">StockAura</span>
         </div>
         <div className="hidden md:flex space-x-6">
           <a href="#features" className="text-purple-200 hover:text-white">Features</a>
@@ -182,7 +182,7 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-xl md:text-2xl mb-12 max-w-3xl mx-auto"
             >
-              StockPro: Your all-in-one platform for intelligent stock trading. Analyze, invest, and grow your wealth
+              StockAura: Your all-in-one platform for intelligent stock trading. Analyze, invest, and grow your wealth
               with cutting-edge tools.
             </motion.p>
             <motion.div
@@ -271,9 +271,9 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="md:w-1/2 mb-12 md:mb-0"
               >
-                <h2 className="text-4xl font-bold mb-6 text-purple-300">About StockPro</h2>
+                <h2 className="text-4xl font-bold mb-6 text-purple-300">About StockAura</h2>
                 <p className="text-xl text-purple-100 mb-8">
-                  StockPro was born from a vision of democratizing stock trading. Our team of financial experts and tech
+                  StockAura was born from a vision of democratizing stock trading. Our team of financial experts and tech
                   innovators came together to create a comprehensive platform that empowers both novice and experienced
                   traders.
                 </p>
@@ -311,7 +311,7 @@ export default function Home() {
                 transition={{ duration: 0.5 }}
                 className="md:w-1/2 relative"
               >
-                <img src="/about-stockpro.jpg" alt="About StockPro" className="rounded-lg shadow-2xl" />
+                <img src="/about-StockAura.jpg" alt="About StockAura" className="rounded-lg shadow-2xl" />
                 <div className="absolute -bottom-10 -left-10 bg-purple-600 text-white p-8 rounded-lg shadow-xl">
                   <p className="text-3xl font-bold">500K+</p>
                   <p className="text-xl">Active Traders</p>
@@ -353,7 +353,7 @@ export default function Home() {
                   name: "Sarah Johnson",
                   role: "Day Trader",
                   quote:
-                    "StockPro has revolutionized my trading strategy. The real-time analytics and intuitive interface have significantly improved my success rate.",
+                    "StockAura has revolutionized my trading strategy. The real-time analytics and intuitive interface have significantly improved my success rate.",
                   image: "/trader-1.jpg",
                   achievement: "250% portfolio growth in 6 months",
                 },
@@ -361,7 +361,7 @@ export default function Home() {
                   name: "Michael Chen",
                   role: "Long-term Investor",
                   quote:
-                    "As a long-term investor, I appreciate StockPro's comprehensive research tools and portfolio management features. It's made diversification so much easier.",
+                    "As a long-term investor, I appreciate StockAura's comprehensive research tools and portfolio management features. It's made diversification so much easier.",
                   image: "/trader-2.jpg",
                   achievement: "Managed a $2M portfolio with 15% YoY growth",
                 },
@@ -369,7 +369,7 @@ export default function Home() {
                   name: "Emily Rodriguez",
                   role: "Algo Trader",
                   quote:
-                    "The API access and backtesting capabilities of StockPro are unparalleled. It's allowed me to develop and deploy trading algorithms with confidence.",
+                    "The API access and backtesting capabilities of StockAura are unparalleled. It's allowed me to develop and deploy trading algorithms with confidence.",
                   image: "/trader-3.jpg",
                   achievement: "Developed 5 profitable trading algorithms",
                 },
@@ -471,7 +471,7 @@ export default function Home() {
               Ready to Start Your Trading Journey?
             </motion.h2>
             <p className="text-xl mb-12 max-w-2xl mx-auto text-purple-100">
-              Join StockPro today and take control of your financial future. Start your free trial now and experience
+              Join StockAura today and take control of your financial future. Start your free trial now and experience
               the power of intelligent trading!
             </p>
             <motion.a
@@ -488,7 +488,7 @@ export default function Home() {
       </main>
       <footer className="bg-purple-900 py-8">
         <div className="container mx-auto px-4 text-center text-purple-200">
-          <p>&copy; 2023 StockPro. All rights reserved.</p>
+          <p>&copy; 2023 StockAura. All rights reserved.</p>
           <div className="flex justify-center space-x-4 mt-4">
             <a href="#" className="hover:text-white">Privacy Policy</a>
             <a href="#" className="hover:text-white">Terms of Service</a>

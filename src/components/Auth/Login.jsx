@@ -26,7 +26,7 @@ export default function Login() {
         setLoading(true);
 
         try {
-            const response = await axios.post('http://localhost:5000/api/auth/login', formData);
+            const response = await axios.post('http://localhost:5000/api/Login', formData);
             login(response.data.user, response.data.token);
             toast.success('Login successful!');
             

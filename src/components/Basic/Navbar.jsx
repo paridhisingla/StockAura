@@ -32,6 +32,7 @@ const Navbar = () => {
           <a href="/#pricing" className="text-purple-200 hover:text-white">Pricing</a>
           <Link to="/purchase" className="text-purple-200 hover:text-white">Stocks</Link>
           <Link to="/profile" className="text-purple-200 hover:text-white">Profile</Link>
+          <Link to="/learning" className="text-purple-200 hover:text-white">Learning</Link>
         </div>
         <div className="hidden md:flex space-x-4">
           {isAuthenticated ? (
@@ -75,6 +76,7 @@ const Navbar = () => {
           <a href="/#pricing" className="block px-4 py-2 text-purple-200 hover:text-white">Pricing</a>
           <Link to="/purchase" className="block px-4 py-2 text-purple-200 hover:text-white">Stocks</Link>
           <Link to="/profile" className="block px-4 py-2 text-purple-200 hover:text-white">Profile</Link>
+          <Link to="/learning" className="block px-4 py-2 text-purple-200 hover:text-white">Learning</Link>
           <div className="flex flex-col space-y-2 px-4 py-2">
             {isAuthenticated ? (
               <>

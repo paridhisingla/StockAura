@@ -12,7 +12,7 @@ import StockList from './components/Stocks/StockList';
 import StockAnalytics from './components/Stocks/StockAnalytics';
 import AddStock from './components/Stocks/AddStock';
 import PrivateRoute from './Protected_Routes/PrivateRoute';
-
+import Learning from "./components/Learning/Learning"
 
 import "./App.css"
 import Purchase from "./components/Purchase/Purchase";
@@ -33,6 +33,7 @@ function App() {
             
             
           <Route path="/purchase" element={<Purchase />} />
+          <Route path="/learning" element={<Learning />} />
           </Route>
 
           <Route path="/admin" element={<PrivateRoute><Admin /></PrivateRoute>}>
